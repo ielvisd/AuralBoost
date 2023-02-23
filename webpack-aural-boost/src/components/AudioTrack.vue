@@ -38,10 +38,9 @@
         <p class="text-xl p-0 m-0">🦚</p>
         </BoostButton>
       </q-card-section>
-
-
-
     </q-card-section>
+
+    <!-- TODO: Extract to it's own component - this is the confirmation dialog -->
     <q-dialog v-model="boostConfirmCard">
       <q-card class="my-card">
         <q-card-section>
@@ -92,7 +91,6 @@ const props = withDefaults(defineProps<Props>(), {
 });
 
 const onBoostSuccess = (response: any) => {
-  console.log('boost success', response);
   boostTxid.value = response.txid;;
   boostConfirmCard.value = true;
 }
