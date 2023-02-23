@@ -82,30 +82,23 @@ const injectedContent = inject('content') as string
 const contentToBoost = injectedContent ?? props.content
 const boost = async () => {
 
-    // Get the txid from RelayX
-    console.log('props are: ', props)
-    const { data: { data:  { token } } } = await api.get(`https://staging-backend.relayx.com/api/market/${props.content}`)
-
-    console.log('token is: ', token)
-
-    // Get the txid by removing the utxo from the token location
-    const contentTxid = token?.location.substring(0, token?.location.indexOf('_'));
-
-  const promise = new Promise(async (resolve, reject) => {
+    // Get the txid by removing the utxo from the token contract
+    const contentTxid = props?.content.substring(0, props?.content.indexOf('_'));
+    const promise = new Promise(async (resolve, reject) => {
     try {
       // @ts-expect-error
       const stag = wrapRelayx(relayone)
       if (props.onSending)
         props.onSending()
-      console.log('props are: ', props)
-      const { txid, txhex, job } = await stag.boost.buy({
+
+      await stag.boost.buy({
         content: contentTxid,
         difficulty: 0.001,
         value: 124_000,
         tag: props.tag,
       })
       if (props.onSuccess)
-        props.onSuccess({ txid, txhex, job })
+        props.onSuccess({ txid: contentTxid }, )
       // @ts-expect-error
       relayone
         .send({
