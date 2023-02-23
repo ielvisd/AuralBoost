@@ -2,6 +2,7 @@
 <script lang="ts" setup>
 import { computed, inject } from 'vue'
 import { wrapRelayx } from 'stag-relayx'
+import { api } from 'boot/axios'
 const props = defineProps({
   href: {
     required: false,
@@ -53,8 +54,8 @@ const props = defineProps({
   round: Boolean,
 })
 const colorClasses = computed(() => {
-  const baseClasses = 'bg-blue-600 text-blue-100 border-blue-600 hover:bg-blue-700 hover:border-blue-700 hover:text-white'
-  const outlineClasses = 'border-blue bg-white text-blue hover:bg-blue-200 hover:border-blue hover:text-white'
+  const baseClasses = 'bg-pink-600 text-pink-100 border-pink-600 hover:bg-pink-700 hover:border-pink-700 hover:text-white'
+  const outlineClasses = 'border-pink bg-white text-pink hover:bg-pink-200 hover:border-pink hover:text-white'
   return props.outline ? outlineClasses : baseClasses
 })
 const sizeClasses = computed(() => {
@@ -79,7 +80,17 @@ const buttonType = computed(() => {
 // TODO: Make the other props available as well
 const injectedContent = inject('content') as string
 const contentToBoost = injectedContent ?? props.content
-const boost = () => {
+const boost = async () => {
+
+    // Get the txid from RelayX
+    console.log('props are: ', props)
+    const { data: { data:  { token } } } = await api.get(`https://staging-backend.relayx.com/api/market/${props.content}`)
+
+    console.log('token is: ', token)
+
+    // Get the txid by removing the utxo from the token location
+    const contentTxid = token?.location.substring(0, token?.location.indexOf('_'));
+
   const promise = new Promise(async (resolve, reject) => {
     try {
       // @ts-expect-error
@@ -88,8 +99,8 @@ const boost = () => {
         props.onSending()
       console.log('props are: ', props)
       const { txid, txhex, job } = await stag.boost.buy({
-        content: contentToBoost,
-        difficulty: 0.025,
+        content: contentTxid,
+        difficulty: 0.001,
         value: 124_000,
         tag: props.tag,
       })
@@ -126,7 +137,7 @@ const boost = () => {
 <template>
   <component :is="buttonType"
     class="pulse font-medium flex items-center cursor-pointer border shadow hover:shadow-lg focus:outline-none focus:shadow-outline"
-    :href="href" :type="type" :class="btnClasses" @click="boost(content)">
+    :href="href" :type="type" :class="btnClasses" @click="boost()">
     <slot />
   </component>
 </template>

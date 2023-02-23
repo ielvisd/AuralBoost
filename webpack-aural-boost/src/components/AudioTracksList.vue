@@ -42,6 +42,7 @@ const currentTrackLocation = ref('');
 const currentTrackImageLocation = ref('');
 const bitcoinAudioPlayer = ref(AudioPlayer);
 const isPlaying = ref(false);
+const boostConfirmCard = ref(false);
 
 const emit = defineEmits<{
   (e: 'setNewDate', newDateModel: object): void,

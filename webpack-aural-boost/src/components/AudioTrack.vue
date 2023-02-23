@@ -28,21 +28,72 @@
         <p ml-2 my-auto text-xs font-bold> {{ track.stats.vol_total / 100000000 }}</p>
       </q-card-section>
 
+      <q-card-section>
+        <BoostButton
+        :content="track.origin"
+        :onSuccess="onBoostSuccess"
+        size="sm"
+        round
+        outline>
+        <p class="text-xl p-0 m-0">🦚</p>
+        </BoostButton>
+      </q-card-section>
+
+
+
     </q-card-section>
+    <q-dialog v-model="boostConfirmCard">
+      <q-card class="my-card">
+        <q-card-section>
+          <q-card-section horizontal flex items-center>
+            <div class="w-24 my-auto px-4">
+              <q-img class="col-5 shadow rounded-full max-w-full h-auto align-middle border-none"
+                style="height: 50px; max-width: 50px" :src="`https://berry2.relayx.com/${track.image}`" />
+            </div>
+
+            <q-card-section>
+              <p my-auto text-lg> Boosted <span font-bold>
+                {{ track.name }}
+              </span> successfully!</p>
+            </q-card-section>
+          </q-card-section>
+        </q-card-section>
+        <!-- A section with a link to the pow.co page to this txid that opens in a new windo -->
+        <q-card-section>
+          <q-btn mx-auto bg-pink-600 type="a" target="_blank" :href="`https://pow.co/${boostTxid}`">
+            <p my-auto font-bold mx-auto text-center>
+              See your boosted track at pow.co
+            </p>
+          </q-btn>
+      </q-card-section>
+      </q-card>
+    </q-dialog>
   </q-card>
 </template>
 
 <script setup lang="ts">
 import { Track } from './models';
+import BoostButton from './BoostButton.vue'
+import { ref } from 'vue';
+
+const boostConfirmCard = ref(false);
+const boostTxid = ref('');
 
 interface Props {
   track: Track;
   isPlaying?: boolean;
   currentTrack?: Track;
 }
+
 const props = withDefaults(defineProps<Props>(), {
   track: () => { name: '' },
   isPlaying: false,
   currentTrack: () => { name: '' },
 });
+
+const onBoostSuccess = (response: any) => {
+  console.log('boost success', response);
+  boostTxid.value = response.txid;;
+  boostConfirmCard.value = true;
+}
 </script>
