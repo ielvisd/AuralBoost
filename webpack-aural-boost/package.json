@@ -1,0 +1,63 @@
+{
+  "name": "webpack-aural-boost",
+  "version": "0.0.1",
+  "description": "Play and Boost Bitcoin Audio NFTs",
+  "productName": "Aural Boost",
+  "author": "Elvis Ibarra <ielvisd@gmail.com>",
+  "private": true,
+  "scripts": {
+    "dev": "quasar dev",
+    "build": "quasar build",
+    "build:pwa": "quasar build -m pwa",
+    "lint": "eslint --ext .js,.ts,.vue ./",
+    "format": "prettier --write \"**/*.{js,ts,vue,scss,html,md,json}\" --ignore-path .gitignore",
+    "test": "echo \"No test specified\" && exit 0"
+  },
+  "dependencies": {
+    "@apollo/client": "^3.7.9",
+    "@quasar/extras": "^1.0.0",
+    "@vue/apollo-composable": "4.0.0-beta.4",
+    "axios": "^0.21.1",
+    "core": "link:@apollo/client/core",
+    "core-js": "^3.6.5",
+    "graphql": "^16.6.0",
+    "node-polyfill-webpack-plugin": "^2.0.1",
+    "pinia": "^2.0.11",
+    "quasar": "^2.6.0",
+    "stag-relayx": "^0.2.10",
+    "vue": "^3.0.0",
+    "vue-i18n": "^9.2.2",
+    "vue-router": "^4.0.0",
+    "vue3-audio-player": "^1.0.7"
+  },
+  "devDependencies": {
+    "@quasar/app-webpack": "^3.0.0",
+    "@types/node": "^12.20.21",
+    "@typescript-eslint/eslint-plugin": "^5.10.0",
+    "@typescript-eslint/parser": "^5.10.0",
+    "@unocss/preset-attributify": "^0.50.0",
+    "@unocss/preset-uno": "^0.50.0",
+    "@unocss/webpack": "^0.50.0",
+    "eslint": "^8.10.0",
+    "eslint-config-prettier": "^8.1.0",
+    "eslint-plugin-vue": "^9.0.0",
+    "prettier": "^2.5.1",
+    "unocss": "^0.50.0"
+  },
+  "browserslist": [
+    "last 10 Chrome versions",
+    "last 10 Firefox versions",
+    "last 4 Edge versions",
+    "last 7 Safari versions",
+    "last 8 Android versions",
+    "last 8 ChromeAndroid versions",
+    "last 8 FirefoxAndroid versions",
+    "last 10 iOS versions",
+    "last 5 Opera versions"
+  ],
+  "engines": {
+    "node": ">= 12.22.1",
+    "npm": ">= 6.13.4",
+    "yarn": ">= 1.21.1"
+  }
+}
