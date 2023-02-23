@@ -75,7 +75,7 @@ import { Track } from './models';
 import BoostButton from './BoostButton.vue'
 import { ref } from 'vue';
 
-const boostConfirmCard = ref(true);
+const boostConfirmCard = ref(false);
 const boostTxid = ref('');
 
 interface Props {
