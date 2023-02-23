@@ -58,7 +58,7 @@
           </q-card-section>
         </q-card-section>
         <!-- A section with a link to the pow.co page to this txid that opens in a new windo -->
-        <q-card-section>
+        <q-card-section flex align-center items-center>
           <q-btn mx-auto bg-pink-600 type="a" target="_blank" :href="`https://pow.co/${boostTxid}`">
             <p my-auto font-bold mx-auto text-center>
               See your boosted track at pow.co
@@ -75,7 +75,7 @@ import { Track } from './models';
 import BoostButton from './BoostButton.vue'
 import { ref } from 'vue';
 
-const boostConfirmCard = ref(false);
+const boostConfirmCard = ref(true);
 const boostTxid = ref('');
 
 interface Props {
