@@ -11,7 +11,9 @@ import AudioTracksList from 'src/components/AudioTracksList.vue';
 import { ref, watch, onBeforeMount } from 'vue';
 import { useQuery } from '@vue/apollo-composable';
 import gql from 'graphql-tag';
+import { useQuasar } from 'quasar'
 
+const $q = useQuasar()
 const audioNFTs = ref<Track[]>([]);
 const dateRange = ref({
   label: 'Last 7 days',
@@ -30,6 +32,9 @@ const setSearchText = (value: string) => {
 };
 
 const getAudioRankings = async (dateFilter: string, searchFilter: string) => {
+  $q.loading.show({
+    // delay: 400 // ms
+  })
   const { result } = useQuery(gql`
     query Ranks{
       ranks(
@@ -53,6 +58,8 @@ const getAudioRankings = async (dateFilter: string, searchFilter: string) => {
     }
   `);
   audioNFTs.value = result.value?.ranks;
+
+  $q.loading.hide()
 
   watch(result, (newResult) => {
     audioNFTs.value = newResult.ranks;

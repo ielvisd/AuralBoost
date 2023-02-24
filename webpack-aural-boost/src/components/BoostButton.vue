@@ -3,6 +3,9 @@
 import { computed, inject } from 'vue'
 import { wrapRelayx } from 'stag-relayx'
 import { api } from 'boot/axios'
+import { useQuasar } from 'quasar'
+
+const $q = useQuasar()
 const props = defineProps({
   href: {
     required: false,
@@ -81,7 +84,9 @@ const buttonType = computed(() => {
 const injectedContent = inject('content') as string
 const contentToBoost = injectedContent ?? props.content
 const boost = async () => {
-
+    $q.loading.show({
+      // delay: 400 // ms
+    })
     // Get the txid by removing the utxo from the token contract
     const contentTxid = props?.content.substring(0, props?.content.indexOf('_'));
     const promise = new Promise(async (resolve, reject) => {
@@ -116,7 +121,9 @@ const boost = async () => {
     }
     catch (error) {
       console.error('relayx', error)
+      $q.loading.hide()
       if (props.onError) {
+        $q.loading.hide()
         props.onError(error)
         reject(error)
       }

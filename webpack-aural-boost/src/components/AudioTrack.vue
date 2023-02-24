@@ -74,7 +74,9 @@
 import { Track } from './models';
 import BoostButton from './BoostButton.vue'
 import { ref } from 'vue';
+import { useQuasar } from 'quasar';
 
+const $q = useQuasar();
 const boostConfirmCard = ref(false);
 const boostTxid = ref('');
 
@@ -93,5 +95,6 @@ const props = withDefaults(defineProps<Props>(), {
 const onBoostSuccess = (response: any) => {
   boostTxid.value = response.txid;;
   boostConfirmCard.value = true;
+  $q.loading.hide();
 }
 </script>

@@ -27,6 +27,7 @@ import { Track } from './models';
 import { ref, watch, withDefaults, defineProps } from 'vue';
 import AudioPlayer from 'vue3-audio-player';
 import 'vue3-audio-player/dist/style.css';
+import { useQuasar } from 'quasar'
 
 const currentTrack = ref<Track>({
   name: '',
@@ -42,7 +43,7 @@ const currentTrackLocation = ref('');
 const currentTrackImageLocation = ref('');
 const bitcoinAudioPlayer = ref(AudioPlayer);
 const isPlaying = ref(false);
-const boostConfirmCard = ref(false);
+const $q = useQuasar()
 
 const emit = defineEmits<{
   (e: 'setNewDate', newDateModel: object): void,
@@ -86,7 +87,6 @@ const playTrack = () => {
 };
 
 const checkIsPlaying = () => {
-  console.log('checkIsPlaying', bitcoinAudioPlayer.value.isPlaying)
   bitcoinAudioPlayer.value.isPlaying ? (isPlaying.value = true) : (isPlaying.value = false);
 }
 
@@ -104,6 +104,10 @@ const loadCurrentTrack = (track: Track) => {
     return
   }
 
+  $q.loading.show({
+    // delay: 400 // ms
+  })
+
   currentTrack.value = track;
   currentTrackImageLocation.value = `https://berry2.relayx.com/${track.image}`;
   const currentTrackLocationFromOrigin = currentTrack.value.origin.replace(
@@ -111,11 +115,16 @@ const loadCurrentTrack = (track: Track) => {
     '2'
   );
   currentTrackLocation.value = `https://staging-backend.relayx.com/api/berry/${currentTrackLocationFromOrigin}`;
+
+  $q.loading.hide()
 };
 
 // This will load a track if it's not already loaded, and play/pause it if it is
 const loadAndOrPlayPauseCurrentTrack = (track: Track) => {
   console.log('track is', track)
+  $q.loading.show({
+    delay: 400 // ms
+  })
   loadCurrentTrack(track);
   console.log('currentTrack is', currentTrack.value)
   console.log('bitcoinAudioPlayer is', bitcoinAudioPlayer?.value, currentTrack.value?.origin === track.origin && bitcoinAudioPlayer.value.currentTime > 0)
@@ -128,6 +137,7 @@ const loadAndOrPlayPauseCurrentTrack = (track: Track) => {
       ? bitcoinAudioPlayer.value.pause()
       : bitcoinAudioPlayer.value.play();
   }
+  $q.loading.hide()
 };
 
 interface Props {

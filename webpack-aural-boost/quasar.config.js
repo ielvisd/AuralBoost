@@ -113,7 +113,12 @@ module.exports = configure(function (ctx) {
       // directives: [],
 
       // Quasar plugins
-      plugins: [],
+      plugins: [
+          'Loading'
+        ],
+        config: {
+          loading: { /* look at QuasarConfOptions from the API card */ }
+        },
     },
 
     // animations: 'all', // --- includes all animations
