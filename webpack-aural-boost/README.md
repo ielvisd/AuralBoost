@@ -1,4 +1,4 @@
-# Aural Boost (webpack-aural-boost)
+# Sonic Boost (webpack-aural-boost)
 
 Play and Boost Bitcoin Audio NFTs
 

@@ -2,7 +2,7 @@
   "name": "webpack-aural-boost",
   "version": "0.0.1",
   "description": "Play and Boost Bitcoin Audio NFTs",
-  "productName": "Aural Boost",
+  "productName": "Sonic Boost",
   "author": "Elvis Ibarra <ielvisd@gmail.com>",
   "private": true,
   "scripts": {

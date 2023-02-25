@@ -156,8 +156,8 @@ module.exports = configure(function (ctx) {
       // chainWebpackCustomSW (/* chain */) {},
 
       manifest: {
-        name: 'Aural Boost',
-        short_name: 'Aural Boost',
+        name: 'Sonic Boost',
+        short_name: 'Sonic Boost',
         description: '',
         display: 'standalone',
         orientation: 'portrait',
