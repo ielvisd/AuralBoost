@@ -1,1 +1,1 @@
-# AuralBoost
+# Sonic Boost

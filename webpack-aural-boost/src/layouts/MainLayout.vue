@@ -5,7 +5,7 @@
         <!-- <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" /> -->
 
         <q-toolbar-title>
-          AuralBoost
+          Sonic Boost
         </q-toolbar-title>
 
       </q-toolbar>
