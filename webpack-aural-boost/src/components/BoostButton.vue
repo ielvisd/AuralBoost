@@ -1,12 +1,53 @@
+<template>
+  <component :is="buttonType"
+    class="pulse font-medium flex items-center cursor-pointer border shadow hover:shadow-lg focus:outline-none focus:shadow-outline"
+    :href="href" :type="type" :class="btnClasses" @click="() => showSuperBoost = true">
+    <slot />
+    <q-dialog v-model="showSuperBoost" position="bottom">
+      <q-card class="q-pa-md w-full md:w-md boostpow-dialog text-center">
+        <div class="flex items-center mb-4">
+          <span class="pulse font-medium flex items-center cursor-pointer border shadow hover:shadow-lg focus:outline-none focus:shadow-outline text-3xl">🦚</span>
+          <div class="ml-2 text-lg font-medium font-bolder">Boostpow</div>
+        </div>
+        <div class="mb-4 w-32 mx-auto">
+          <label class="block mb-1 font-medium">Tag</label>
+          <q-input v-model="tag" outlined class="rounded-md" />api
+        </div>
+        <div class="mb-4 w-32 mx-auto">
+          <label class="block mb-1 font-medium">Difficulty</label>
+          <q-input min=0.00025
+          step=0.0005 v-model.number="difficulty" outlined type="number" class="rounded-md" />
+        </div>
+        <div class="mb-4">
+          <label class="block mb-1 font-medium">Boost Speed {{boostSpeed}}</label>
+          <div class="flex justify-center items-center">
+            <span class="text-gray-500 text-lg">🐢</span>
+            <q-slider v-model.number="boostSpeed" :min="1" :max=100 class="mx-4 w-7/10" />
+            <span class="text-gray-500 text-lg">🐇</span>
+          </div>
+        </div>
+
+        <q-btn @click="boost" v-if="totalPriceInUSD >= 0.01" class="mb-4" :label="`Buy Boost $${  totalPriceInUSD} `" color="primary" />
+
+        <q-btn @click="boost" v-else class="mb-4" :label="`Buy Boost ${ totalPriceInSatoshis} satoshis`" color="primary" />
+
+        <div class="text-gray-500 text-sm">*developer fee: 10%</div>
+      </q-card>
+    </q-dialog>
+  </component>
+</template>
 <!-- eslint-disable @typescript-eslint/ban-ts-comment -->
 <script lang="ts" setup>
-import { computed, inject } from 'vue'
+import { computed, inject, ref, watch } from 'vue'
 import { wrapRelayx } from 'stag-relayx'
 import { api } from 'boot/axios'
 import { useQuasar } from 'quasar'
 
-const $q = useQuasar()
 const props = defineProps({
+  exchangeRate: {
+    type: Number,
+    default: 0,
+  },
   href: {
     required: false,
     type: String,
@@ -56,6 +97,26 @@ const props = defineProps({
   icon: Boolean,
   round: Boolean,
 })
+
+const defaultPricePerDifficulty = 2.18
+const boostSpeed = ref(50)
+
+const showSuperBoost = ref(false);
+const $q = useQuasar()
+
+const tag = ref('')
+const difficulty = ref(0.00025)
+
+const totalPriceInUSD = ref<number>(defaultPricePerDifficulty*difficulty.value + (defaultPricePerDifficulty * difficulty.value * boostSpeed.value / 100) * 1.1)
+
+const totalPriceInSatoshis = computed<number>(() => (totalPriceInUSD.value * 1e8 / props.exchangeRate).toFixed(0))
+
+const devFee = computed<number>(() => (totalPriceInSatoshis.value * 0.1))
+
+watch ([difficulty, boostSpeed], ([newDifficulty, newBoostSpeed]) => {
+  totalPriceInUSD.value = defaultPricePerDifficulty*newDifficulty + (defaultPricePerDifficulty * newDifficulty * newBoostSpeed / 100) * 1.1
+})
+
 const colorClasses = computed(() => {
   const baseClasses = 'bg-pink-600 text-pink-100 border-pink-600 hover:bg-pink-700 hover:border-pink-700 hover:text-white'
   const outlineClasses = 'border-pink bg-white text-pink hover:bg-pink-200 hover:border-pink hover:text-white'
@@ -98,8 +159,8 @@ const boost = async () => {
 
       await stag.boost.buy({
         content: contentTxid,
-        difficulty: 0.001,
-        value: 124_000,
+        difficulty: difficulty.value,
+        value: totalPriceInSatoshis.value,
         tag: props.tag,
       })
       if (props.onSuccess)
@@ -107,8 +168,8 @@ const boost = async () => {
       // @ts-expect-error
       relayone
         .send({
-          currency: 'USD',
-          amount: 0.001,
+          currency: 'BSV',
+          amount: devFee.value * 1e-8,
           to: '15etMzuXHaEFuoaKCt5gw16LYGrLX7iKKj', // ielvis Twetch address for testing
         })
         .then((result) => {
@@ -134,13 +195,6 @@ const boost = async () => {
 }
 </script>
 
-<template>
-  <component :is="buttonType"
-    class="pulse font-medium flex items-center cursor-pointer border shadow hover:shadow-lg focus:outline-none focus:shadow-outline"
-    :href="href" :type="type" :class="btnClasses" @click="boost()">
-    <slot />
-  </component>
-</template>
 
 <style scoped>
 .pulse {
@@ -169,5 +223,45 @@ const boost = async () => {
     transform: scale(0.95);
     box-shadow: 0 0 0 0 rgba(107, 156, 250, 0);
   }
+}
+
+.boostpow-dialog {
+  padding: 10px;
+  min-height: 250px;
+}
+
+.boostpow-header {
+  display: flex;
+  align-items: center;
+}
+
+.boostpow-title {
+  margin-left: 10px;
+  font-size: 1.5rem;
+}
+
+.boostpow-slider {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+
+.boostpow-slider .q-slider__label.turtle:before {
+  content: '🐢';
+}
+
+.boostpow-slider .q-slider__label.rabbit:before {
+  content: '🐇';
+}
+
+.boostpow-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+}
+
+.boostpow-devfee {
+  font-size: 0.75rem;
 }
 </style>

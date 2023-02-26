@@ -16,18 +16,33 @@
 
     <p v-if="!tracks.length">No tracks sold during selected timeframe.</p>
 
-    <audio-track @setCurrentTrack="loadAndOrPlayPauseCurrentTrack" :currentTrack="currentTrack" :track="track"
-      :isPlaying="isPlaying" v-for="track in tracks" :key="track.origin" />
+    <audio-track @setCurrentTrack="loadAndOrPlayPauseCurrentTrack"
+    :exchangeRate="exchangeRate"
+    :currentTrack="currentTrack" :track="track"
+    :isPlaying="isPlaying" v-for="track in tracks" :key="track.origin" />
   </div>
 </template>
 
 <script setup lang="ts">
 import AudioTrack from './AudioTrack.vue';
 import { Track } from './models';
-import { ref, watch, withDefaults, defineProps } from 'vue';
+import { ref, watch, withDefaults, defineProps, onBeforeMount } from 'vue';
 import AudioPlayer from 'vue3-audio-player';
 import 'vue3-audio-player/dist/style.css';
 import { useQuasar } from 'quasar'
+import { api } from 'boot/axios'
+
+const exchangeRate = ref(null)
+
+// TODO: Pass this as a prop instead
+onBeforeMount(async () => {
+  const exchangeRateResponse = await api.get('https://api.whatsonchain.com/v1/bsv/main/exchangerate')
+
+  console.log(exchangeRateResponse.data)
+
+  // round to w decimals
+  exchangeRate.value = exchangeRateResponse.data.rate.toFixed(2)
+})
 
 const currentTrack = ref<Track>({
   name: '',

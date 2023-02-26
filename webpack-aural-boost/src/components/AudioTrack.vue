@@ -30,6 +30,7 @@
 
       <q-card-section>
         <BoostButton
+        :exchangeRate="exchangeRate"
         :content="track.origin"
         :onSuccess="onBoostSuccess"
         size="sm"
@@ -84,9 +85,11 @@ interface Props {
   track: Track;
   isPlaying?: boolean;
   currentTrack?: Track;
+  exchangeRate?: number;
 }
 
 const props = withDefaults(defineProps<Props>(), {
+  exchangeRate: 0,
   track: () => { name: '' },
   isPlaying: false,
   currentTrack: () => { name: '' },
