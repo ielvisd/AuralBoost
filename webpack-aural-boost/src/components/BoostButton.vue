@@ -11,7 +11,7 @@
         </div>
         <div class="mb-4 w-32 mx-auto">
           <label class="block mb-1 font-medium">Tag</label>
-          <q-input v-model="tag" outlined class="rounded-md" />api
+          <q-input v-model="tag" outlined class="rounded-md" />
         </div>
         <div class="mb-4 w-32 mx-auto">
           <label class="block mb-1 font-medium">Difficulty</label>
@@ -40,7 +40,6 @@
 <script lang="ts" setup>
 import { computed, inject, ref, watch } from 'vue'
 import { wrapRelayx } from 'stag-relayx'
-import { api } from 'boot/axios'
 import { useQuasar } from 'quasar'
 
 const props = defineProps({
