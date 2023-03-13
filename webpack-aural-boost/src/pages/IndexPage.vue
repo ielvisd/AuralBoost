@@ -17,7 +17,9 @@ const $q = useQuasar()
 const audioNFTs = ref<Track[]>([]);
 const dateRange = ref({
   label: 'Last 7 days',
-  value: '7d'
+    value: '7d',
+    startDate: Date.now() - 7 * 24 * 60 * 60 * 1000,
+    endDate: Date.now()
 });
 const searchText = ref<string>('');
 

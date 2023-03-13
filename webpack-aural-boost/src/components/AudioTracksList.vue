@@ -72,19 +72,28 @@ const dateModel = ref({
 const options = [
   {
     label: 'Last 24 hours',
-    value: '24h'
+    value: '24h',
+    startDate: Date.now() - 24 * 60 * 60 * 1000,
+    endDate: Date.now()
   },
   {
     label: 'Last 7 days',
-    value: '7d'
+    value: '7d',
+    startDate: Date.now() - 7 * 24 * 60 * 60 * 1000,
+    endDate: Date.now()
   },
   {
     label: 'Last 30 days',
-    value: '30d'
+    value: '30d',
+    startDate: Date.now() - 30 * 24 * 60 * 60 * 1000,
+    endDate: Date.now()
   },
   {
     label: 'All time',
-    value: 'total'
+    value: 'total',
+    // Set to BSV genesis block date in Unix format
+    startDate: 1231006505,
+    endDate: Date.now()
   }
 ]
 

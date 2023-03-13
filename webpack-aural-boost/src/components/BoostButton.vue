@@ -9,14 +9,16 @@
           <span class="pulse font-medium flex items-center cursor-pointer border shadow hover:shadow-lg focus:outline-none focus:shadow-outline text-3xl">🦚</span>
           <div class="ml-2 text-lg font-medium font-bolder">Boostpow</div>
         </div>
-        <div class="mb-4 w-32 mx-auto">
+        <div class="mb-4 w-36 mx-auto">
           <label class="block mb-1 font-medium">Tag</label>
           <q-input v-model="tag" outlined class="rounded-md" />
         </div>
-        <div class="mb-4 w-32 mx-auto">
+        <div class="mb-4 w-36 mx-auto">
           <label class="block mb-1 font-medium">Difficulty</label>
-          <q-input min=0.00025
-          step=0.0005 v-model.number="difficulty" outlined type="number" class="rounded-md" />
+          <q-input min=0.0001
+          step=0.0005 v-model.number="difficulty" outlined type="number" class="rounded-md"
+          :rules="[val => val < 0.0001 || 'Minimum difficulty is 0.00001']"
+          />
         </div>
         <div class="mb-4">
           <label class="block mb-1 font-medium">Boost Speed {{boostSpeed}}</label>
@@ -103,7 +105,8 @@ const boostSpeed = ref(50)
 const showSuperBoost = ref(false);
 const $q = useQuasar()
 
-const tag = ref('')
+// If the content has a difficulty level don't set a tag, otherwise set the tag to 'audio.sonicboost'
+const tag = ref(props.tag || (props.content.includes('difficulty') ? null : 'audio.sonicboost'))
 const difficulty = ref(0.00025)
 
 const totalPriceInUSD = ref<number>(defaultPricePerDifficulty*difficulty.value + (defaultPricePerDifficulty * difficulty.value * boostSpeed.value / 100) * 1.1)
@@ -155,6 +158,13 @@ const boost = async () => {
       const stag = wrapRelayx(relayone)
       if (props.onSending)
         props.onSending()
+
+      console.log('stag.boost.buy', {
+        content: contentTxid,
+        difficulty: difficulty.value,
+        value: totalPriceInSatoshis.value,
+        tag: tag,
+      })
 
       await stag.boost.buy({
         content: contentTxid,
