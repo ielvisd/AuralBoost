@@ -105,8 +105,8 @@ const boostSpeed = ref(50)
 const showSuperBoost = ref(false);
 const $q = useQuasar()
 
-// If the content has a difficulty level don't set a tag, otherwise set the tag to 'audio.sonicboost'
-const tag = ref(props.tag || (props.content.includes('difficulty') ? null : 'audio.sonicboost'))
+// If the content has a difficulty level don't set a tag, otherwise set the tag to 'sonicboost'
+const tag = ref(props.tag || (props.content.includes('difficulty') ? null : 'sonicboost'))
 const difficulty = ref(0.00025)
 
 const totalPriceInUSD = ref<number>(defaultPricePerDifficulty*difficulty.value + (defaultPricePerDifficulty * difficulty.value * boostSpeed.value / 100) * 1.1)

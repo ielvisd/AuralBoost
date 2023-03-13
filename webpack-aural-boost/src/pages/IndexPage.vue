@@ -46,7 +46,7 @@ const getAudioRankings = async (dateFilter: string, searchFilter: string) => {
     // delay: 400 // ms
   })
 
-  // Get the audio NFTs ranked by proof of work using the 'audio.sonicboost' tag which corresponds to this: '617564696f2e736f6e6963626f6f7374' and is retrieved from the POWCO API like this: https://pow.co/api/v1/boost/rankings?start_date=1678595639&tag=617564696f2e736f6e6963626f6f7374
+  // Get the audio NFTs ranked by proof of work using the 'sonicboost' tag which corresponds to this: '617564696f2e736f6e6963626f6f7374' and is retrieved from the POWCO API like this: https://pow.co/api/v1/boost/rankings?start_date=1678595639&tag=617564696f2e736f6e6963626f6f7374
 
   const boost_rankings = await api.get(`https://pow.co/api/v1/boost/rankings?start_date=${dateFilter.startDate}&tag=617564696f2e736f6e6963626f6f7374`)
 
