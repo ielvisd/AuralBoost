@@ -15,25 +15,19 @@
       </div>
 
       <!-- Stats + Boost Button -->
-      <div class="flex items-center justify-between w-full">
-        <q-card-section v-if="track.difficulty || track.stats" class="flex flex-col md:ml-auto stats w-2/7 md:w-full">
+      <div class="flex items-center justify-between">
+          <p class="text-xs m-0"><span class="font-bold">⛏️</span> {{ track.difficulty ?
+            track.difficulty.toFixed(4) : 0 }}</p>
 
-          <p v-if="track.difficulty" class="text-xs m-0"><span class="font-bold">⛏️</span> {{
-            track.difficulty.toFixed(4) }}</p>
-          <p v-if="track.stats.rank" class="text-xs m-0 mt-1"><span class="font-bold">Rank:</span> {{
-            track.stats.rank }}</p>
+        <q-card-section>
 
-          <div v-if="track.stats.rank" class="flex items-center mt-1 rank">
-            <img src="https://cdn.cdnlogo.com/logos/b/91/bitcoin-sv.svg" style="width: 24px; height: 24px;" />
-            <p class="ml-2 my-auto text-xs font-bold">{{ (track.stats.vol_total / 100000000).toFixed(4) }}</p>
-          </div>
-        </q-card-section>
-        <q-card-section class="flex items-center">
           <BoostButton :exchangeRate="exchangeRate" :content="track.origin" :onSuccess="onBoostSuccess" size="sm" round
             outline>
             <p class="text-xl p-0 m-0">🦚</p>
           </BoostButton>
         </q-card-section>
+
+
         <q-card-section class="flex items-center ml-1">
           <q-btn v-if="!isPlaying && currentTrack === track || currentTrack !== track" class="play-btn rounded-full"
             @click="$emit('setCurrentTrack', track)" icon="play_arrow" size="sm" round
