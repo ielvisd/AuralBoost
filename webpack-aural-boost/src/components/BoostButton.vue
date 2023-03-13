@@ -163,7 +163,7 @@ const boost = async () => {
         content: contentTxid,
         difficulty: difficulty.value,
         value: totalPriceInSatoshis.value,
-        tag: tag,
+        tag: tag.value,
       })
 
       await stag.boost.buy({
