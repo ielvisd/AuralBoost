@@ -2,30 +2,65 @@
   <q-card class="my-card" border-solid border-0 border-b border-blue-900 flat w-full md:w-lg py-2>
     <q-card-section horizontal flex items-center>
       <q-card-section>
-        <p my-auto text-xs font-bold> {{ track.stats.rank }}.</p>
+        <!-- Show difficulty with mining emoji if available on track - round to 4 decimal places-->
+        <div
+          v-if="track.difficulty || track.stats"
+          class="flex flex-col justify-center items-center"
+        >
+
+
+          <p v-if="track.difficulty" my-auto text-xs> <span font-bold>Difficulty:</span> ⛏️{{ track.difficulty.toFixed(4) }} </p>
+
+          <p v-else-if="track.stats.rank" my-auto text-xs>  <span font-bold>Rank:</span> {{ track.stats.rank }}.</p>
+        </div>
       </q-card-section>
 
       <div class="w-24 my-auto px-4">
         <q-img class="col-5 shadow rounded-full max-w-full h-auto align-middle border-none"
-          style="height: 50px; max-width: 50px" :src="`https://berry2.relayx.com/${track.image}`" />
+          style="height: 50px; max-width: 50px" :src="`https://berry2.relayx.com/${track.image ? track.image : track.icon.berry}`" />
       </div>
 
       <q-card-section>
         <p my-auto font-bold> {{ track.name }}</p>
       </q-card-section>
 
-      <q-card-section>
-        <q-icon v-if="!isPlaying && currentTrack === track || currentTrack !== track"
-          @click="$emit('setCurrentTrack', track)" name="play_arrow" />
-        <q-icon v-else @click="$emit('setCurrentTrack', track)" name="pause" />
+      <q-card-section class="flex justify-center items-center">
+        <q-btn
+        v-if="!isPlaying && currentTrack === track || currentTrack !== track"
+        class="play-btn rounded-full"
+        @click="$emit('setCurrentTrack', track)"
+        icon="play_arrow"
+        size="sm"
+        flex
+        items-center
+        justify-center
+        round
+        box-shadow="0 4px 6px rgba(0, 0, 0, 0.1)"
+        style="background: #FF0080; color: white"
+        cursor="pointer"
+      />
+      <q-btn
+        v-else
+        class="play-btn rounded-full"
+        @click="$emit('setCurrentTrack', track)"
+        icon="pause"
+        size="sm"
+        flex
+        items-center
+        justify-center
+        round
+        box-shadow="0 4px 6px rgba(0, 0, 0, 0.1)"
+        style="background: #FF0080; color: white"
+        cursor="pointer"
+      />
       </q-card-section>
 
-      <q-card-section ml-auto flex justify-center items-center>
+      <q-card-section v-if="track.stats.vol_total" ml-auto flex justify-center items-center>
         <div w-4 pt-1>
           <img src="https://cdn.cdnlogo.com/logos/b/91/bitcoin-sv.svg">
         </div>
 
-        <p ml-2 my-auto text-xs font-bold> {{ track.stats.vol_total / 100000000 }}</p>
+        <p  ml-2 my-auto text-xs font-bold> {{ track.stats.vol_total / 100000000 }}</p>
       </q-card-section>
 
       <q-card-section>

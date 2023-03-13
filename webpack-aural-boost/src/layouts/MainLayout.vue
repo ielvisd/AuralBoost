@@ -5,7 +5,9 @@
         <!-- <q-btn flat dense round icon="menu" aria-label="Menu" @click="toggleLeftDrawer" /> -->
 
         <q-toolbar-title>
-          Sonic Boost
+          <!-- A title and a tagline -->
+          <div class="text-h6">Sonic Boost Club</div>
+          <div class="text-caption">Audio Bitcoin NFTs ranked by Boost Proof of Work</div>
         </q-toolbar-title>
 
       </q-toolbar>

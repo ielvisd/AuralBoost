@@ -69,23 +69,36 @@ const dateModel = ref({
   label: 'Last 7 days',
   value: '7d'
 })
+
+// Get the current time in milliseconds since January 1, 1970 (Unix timestamp)
+const now = new Date().getTime()
+// Calculate the Unix timestamp for 7 days ago (in milliseconds)
+const sevenDaysAgo = now - (7 * 24 * 60 * 60 * 1000);
+const oneDayAgo = now - (1 * 24 * 60 * 60 * 1000);
+const thirtyDaysAgo = now - (30 * 24 * 60 * 60 * 1000);
+// Convert the Unix timestamp to seconds by dividing by 1000
+const unixTimestampSevenDaysAgo = Math.floor(sevenDaysAgo / 1000);
+const unixTimestampOneDayAgo = Math.floor(oneDayAgo / 1000);
+const unixTimestampThirtyDaysAgo = Math.floor(thirtyDaysAgo / 1000);
+
+
 const options = [
   {
     label: 'Last 24 hours',
     value: '24h',
-    startDate: Date.now() - 24 * 60 * 60 * 1000,
+    startDate: unixTimestampOneDayAgo,
     endDate: Date.now()
   },
   {
     label: 'Last 7 days',
     value: '7d',
-    startDate: Date.now() - 7 * 24 * 60 * 60 * 1000,
+    startDate: unixTimestampSevenDaysAgo,
     endDate: Date.now()
   },
   {
     label: 'Last 30 days',
     value: '30d',
-    startDate: Date.now() - 30 * 24 * 60 * 60 * 1000,
+    startDate: unixTimestampThirtyDaysAgo,
     endDate: Date.now()
   },
   {
