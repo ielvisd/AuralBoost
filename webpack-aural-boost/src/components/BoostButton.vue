@@ -17,7 +17,7 @@
           <label class="block mb-1 font-medium">Difficulty</label>
           <q-input min=0.0001
           step=0.0005 v-model.number="difficulty" outlined type="number" class="rounded-md"
-          :rules="[val => val < 0.0001 || 'Minimum difficulty is 0.00001']"
+          :rules="[val => val > 0.00001 || 'Minimum difficulty is 0.00001']"
           />
         </div>
         <div class="mb-4">
@@ -170,7 +170,7 @@ const boost = async () => {
         content: contentTxid,
         difficulty: difficulty.value,
         value: totalPriceInSatoshis.value,
-        tag: props.tag,
+        tag: tag.value,
       })
       if (props.onSuccess)
         props.onSuccess({ txid: contentTxid }, )
