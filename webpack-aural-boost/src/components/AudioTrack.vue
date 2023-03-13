@@ -1,79 +1,47 @@
 <template>
-  <q-card class="my-card" border-solid border-0 border-b border-blue-900 flat w-full md:w-lg py-2>
-    <q-card-section horizontal flex items-center>
-      <q-card-section>
-        <!-- Show difficulty with mining emoji if available on track - round to 4 decimal places-->
-        <div
-          v-if="track.difficulty || track.stats"
-          class="flex flex-col justify-center items-center"
-        >
+  <q-card class="my-card md:w-4/5 mx-auto" border-solid border-0 border-b border-blue-900 flat w-full py-2>
+    <q-card-section horizontal flex flex-col md:flex-row items-center justify-between md:no-wrap>
 
-
-          <p v-if="track.difficulty" my-auto text-xs> <span font-bold>Difficulty:</span> ⛏️{{ track.difficulty.toFixed(4) }} </p>
-
-          <p v-else-if="track.stats.rank" my-auto text-xs>  <span font-bold>Rank:</span> {{ track.stats.rank }}.</p>
+      <!-- Image + Title -->
+      <div class="flex items-center justify-between w-full md:w-3/5">
+        <div class="w-24 px-4">
+          <q-img class="col-5 shadow rounded-full max-w-full h-auto align-middle border-none"
+            style="height: 50px; max-width: 50px"
+            :src="`https://berry2.relayx.com/${track.image ? track.image : track.icon.berry}`" />
         </div>
-      </q-card-section>
-
-      <div class="w-24 my-auto px-4">
-        <q-img class="col-5 shadow rounded-full max-w-full h-auto align-middle border-none"
-          style="height: 50px; max-width: 50px" :src="`https://berry2.relayx.com/${track.image ? track.image : track.icon.berry}`" />
+        <q-card-section class="flex-1 w-full md:w-2/5">
+          <p class="font-bold text-lg">{{ track.name }}</p>
+        </q-card-section>
       </div>
 
-      <q-card-section>
-        <p my-auto font-bold> {{ track.name }}</p>
-      </q-card-section>
+      <!-- Stats + Boost Button -->
+      <div class="flex items-center justify-between w-full">
+        <q-card-section v-if="track.difficulty || track.stats" class="flex flex-col md:ml-auto stats w-2/7 md:w-full">
 
-      <q-card-section class="flex justify-center items-center">
-        <q-btn
-        v-if="!isPlaying && currentTrack === track || currentTrack !== track"
-        class="play-btn rounded-full"
-        @click="$emit('setCurrentTrack', track)"
-        icon="play_arrow"
-        size="sm"
-        flex
-        items-center
-        justify-center
-        round
-        box-shadow="0 4px 6px rgba(0, 0, 0, 0.1)"
-        style="background: #FF0080; color: white"
-        cursor="pointer"
-      />
-      <q-btn
-        v-else
-        class="play-btn rounded-full"
-        @click="$emit('setCurrentTrack', track)"
-        icon="pause"
-        size="sm"
-        flex
-        items-center
-        justify-center
-        round
-        box-shadow="0 4px 6px rgba(0, 0, 0, 0.1)"
-        style="background: #FF0080; color: white"
-        cursor="pointer"
-      />
-      </q-card-section>
+          <p v-if="track.difficulty" class="text-xs m-0"><span class="font-bold">⛏️</span> {{
+            track.difficulty.toFixed(4) }}</p>
+          <p v-if="track.stats.rank" class="text-xs m-0 mt-1"><span class="font-bold">Rank:</span> {{
+            track.stats.rank }}</p>
 
-      <q-card-section v-if="track.stats.vol_total" ml-auto flex justify-center items-center>
-        <div w-4 pt-1>
-          <img src="https://cdn.cdnlogo.com/logos/b/91/bitcoin-sv.svg">
-        </div>
-
-        <p  ml-2 my-auto text-xs font-bold> {{ track.stats.vol_total / 100000000 }}</p>
-      </q-card-section>
-
-      <q-card-section>
-        <BoostButton
-        :exchangeRate="exchangeRate"
-        :content="track.origin"
-        :onSuccess="onBoostSuccess"
-        size="sm"
-        round
-        outline>
-        <p class="text-xl p-0 m-0">🦚</p>
-        </BoostButton>
-      </q-card-section>
+          <div v-if="track.stats.rank" class="flex items-center mt-1 rank">
+            <img src="https://cdn.cdnlogo.com/logos/b/91/bitcoin-sv.svg" style="width: 24px; height: 24px;" />
+            <p class="ml-2 my-auto text-xs font-bold">{{ (track.stats.vol_total / 100000000).toFixed(4) }}</p>
+          </div>
+        </q-card-section>
+        <q-card-section class="flex items-center">
+          <BoostButton :exchangeRate="exchangeRate" :content="track.origin" :onSuccess="onBoostSuccess" size="sm" round
+            outline>
+            <p class="text-xl p-0 m-0">🦚</p>
+          </BoostButton>
+        </q-card-section>
+        <q-card-section class="flex items-center ml-1">
+          <q-btn v-if="!isPlaying && currentTrack === track || currentTrack !== track" class="play-btn rounded-full"
+            @click="$emit('setCurrentTrack', track)" icon="play_arrow" size="sm" round
+            style="background: #FF0080; color: white" />
+          <q-btn v-else class="play-btn rounded-full" @click="$emit('setCurrentTrack', track)" icon="pause" size="sm"
+            round style="background: #FF0080; color: white" />
+        </q-card-section>
+      </div>
     </q-card-section>
 
     <!-- TODO: Extract to it's own component - this is the confirmation dialog -->
@@ -88,8 +56,8 @@
 
             <q-card-section>
               <p my-auto text-lg> Boosted <span font-bold>
-                {{ track.name }}
-              </span> successfully!</p>
+                  {{ track.name }}
+                </span> successfully!</p>
             </q-card-section>
           </q-card-section>
         </q-card-section>
@@ -100,7 +68,7 @@
               See your boosted track at pow.co
             </p>
           </q-btn>
-      </q-card-section>
+        </q-card-section>
       </q-card>
     </q-dialog>
   </q-card>
@@ -136,3 +104,11 @@ const onBoostSuccess = (response: any) => {
   $q.loading.hide();
 }
 </script>
+
+<style scoped>
+.stats {
+}
+
+.rank {
+}
+</style>
