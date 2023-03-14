@@ -8,7 +8,12 @@
         <div class="flex items-center mb-4">
           <span class="pulse font-medium flex items-center cursor-pointer border shadow hover:shadow-lg focus:outline-none focus:shadow-outline text-3xl">🦚</span>
           <div class="ml-2 text-lg font-medium font-bolder">Boostpow</div>
+          <div class="flex flex-row items-center justify-center ml-auto">
+            <label class="block mb-1 font-medium">Rank</label>
+            <q-input min="1" :max="ranks.length" v-model="estimatedRank" outlined type="number" class="rounded-md ml-2" />
+          </div>
         </div>
+
         <div class="mb-4 w-36 mx-auto">
           <label class="block mb-1 font-medium">Tag</label>
           <q-input v-model="tag" outlined class="rounded-md" />
@@ -19,10 +24,6 @@
           step=0.0005 v-model.number="difficulty" outlined type="number" class="rounded-md"
           :rules="[val => val > 0.00001 || 'Minimum difficulty is 0.00001']"
           />
-          <!-- An input that shows and adjust the rank based on the difficulty -->
-          <label class="block mb-1 font-medium">Rank</label>
-
-          <q-input min="1" :max="ranks.length" v-model="estimatedRank" outlined type="number" class="rounded-md" />
         </div>
         <div class="mb-4">
           <label class="block mb-1 font-medium">Boost Speed {{boostSpeed}}</label>
@@ -40,6 +41,12 @@
         <div class="text-gray-500 text-sm">*developer fee: 10%</div>
       </q-card>
     </q-dialog>
+
+
+
+
+
+
   </component>
 </template>
 <!-- eslint-disable @typescript-eslint/ban-ts-comment -->
