@@ -3,6 +3,7 @@ export interface Track {
   name: string;
   image: string;
   origin: string;
+  ranks: [];
   stats: {
     __typename: string;
     rank: number;

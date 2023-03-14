@@ -50,8 +50,6 @@ const getAudioRankings = async (dateFilter: string, searchFilter: string) => {
 
   const boost_rankings = await api.get(`https://pow.co/api/v1/boost/rankings?start_date=${dateFilter.startDate}&tag=736f6e6963626f6f7374`)
 
-  console.log('boost_rankings', boost_rankings.data)
-
   let boostedAudioNFTs: any[] = []
   // Hmm... I think since the rRelay information is always in the third output I can use the Relay API to get the metadata
   for (let i = 0; i < boost_rankings.data.rankings.length; i++) {
@@ -59,7 +57,6 @@ const getAudioRankings = async (dateFilter: string, searchFilter: string) => {
     // The relay endpoint looks like this: https://staging-backend.relayx.com/api/market/6b2952d2dc2e868a028d0e3f1d9ee3ad8fc6ab2d2c982244d5c6519132b13748_o3
     const dataFromRelayX = await api.get(`https://staging-backend.relayx.com/api/market/${nft.content_txid}_o3`)
     const tokenFromRelayX = dataFromRelayX.data.data.token
-    console.log('tokenFromRelayX', tokenFromRelayX)
     // Add the relay data to audioNFTs
     boostedAudioNFTs.push({...tokenFromRelayX, difficulty: nft.difficulty, stats: {}})
   }

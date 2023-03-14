@@ -19,6 +19,10 @@
           step=0.0005 v-model.number="difficulty" outlined type="number" class="rounded-md"
           :rules="[val => val > 0.00001 || 'Minimum difficulty is 0.00001']"
           />
+          <!-- An input that shows and adjust the rank based on the difficulty -->
+          <label class="block mb-1 font-medium">Rank</label>
+
+          <q-input min="1" :max="ranks.length" v-model="estimatedRank" outlined type="number" class="rounded-md" />
         </div>
         <div class="mb-4">
           <label class="block mb-1 font-medium">Boost Speed {{boostSpeed}}</label>
@@ -62,6 +66,11 @@ const props = defineProps({
     type: String,
     required: true,
   },
+  ranks: {
+    type: Array,
+    required: false,
+    default: () => [],
+  },
   tag: {
     type: String,
     default: null,
@@ -102,21 +111,37 @@ const props = defineProps({
 const defaultPricePerDifficulty = 2.18
 const boostSpeed = ref(50)
 
+
 const showSuperBoost = ref(false);
 const $q = useQuasar()
 
 // If the content has a difficulty level don't set a tag, otherwise set the tag to 'sonicboost'
 const tag = ref(props.tag || (props.content.includes('difficulty') ? null : 'sonicboost'))
 const difficulty = ref(0.00025)
-
+const estimatedRank = ref(
+  props.ranks.findIndex((rank: any) => rank.difficulty < difficulty.value) + 1
+)
 const totalPriceInUSD = ref<number>(defaultPricePerDifficulty*difficulty.value + (defaultPricePerDifficulty * difficulty.value * boostSpeed.value / 100) * 1.1)
 
 const totalPriceInSatoshis = computed<number>(() => (totalPriceInUSD.value * 1e8 / props.exchangeRate).toFixed(0))
 
 const devFee = computed<number>(() => (totalPriceInSatoshis.value * 0.1))
 
-watch ([difficulty, boostSpeed], ([newDifficulty, newBoostSpeed]) => {
+watch ([difficulty, boostSpeed], ([newDifficulty, newBoostSpeed], [prevDifficulty, prevBoostSpeed]) => {
   totalPriceInUSD.value = defaultPricePerDifficulty*newDifficulty + (defaultPricePerDifficulty * newDifficulty * newBoostSpeed / 100) * 1.1
+  // If the difficulty is the same as the previous difficulty, then the rank should be the same as the previous rank. Otherwise, the rank should be the index in which the difficulty would be inserted in the ranks array which is sorted from highest to lowest difficulty. If it is equal to the current difficulty then it is the current rank. The index is 1 based so we add 1 to it.
+
+  let index = props.ranks.findIndex((rank: any) => rank.difficulty <= newDifficulty)
+
+  // if index = -1, set it to the length of the ranks array
+  index = index === -1 ? props.ranks.length : index
+
+  estimatedRank.value = newDifficulty === prevDifficulty ? estimatedRank.value : index + 1
+})
+
+watch([estimatedRank], ([newRank], [prevRank]) => {
+  // If the newRank is larger than the length of the ranks array, then the difficulty should be the last difficulty in the ranks array. Otherwise, the difficulty should be the difficulty of the rank that was selected.
+  difficulty.value = newRank > props.ranks.length ? props.ranks[props.ranks.length - 1].difficulty : props.ranks[newRank - 1].difficulty
 })
 
 const colorClasses = computed(() => {
@@ -142,6 +167,7 @@ const buttonType = computed(() => {
   else
     return 'button'
 })
+
 // To get the injected content from plugin initialization
 // TODO: Make the other props available as well
 const injectedContent = inject('content') as string
@@ -158,13 +184,6 @@ const boost = async () => {
       const stag = wrapRelayx(relayone)
       if (props.onSending)
         props.onSending()
-
-      console.log('stag.boost.buy', {
-        content: contentTxid,
-        difficulty: difficulty.value,
-        value: totalPriceInSatoshis.value,
-        tag: tag.value,
-      })
 
       await stag.boost.buy({
         content: contentTxid,

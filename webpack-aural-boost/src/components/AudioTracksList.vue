@@ -17,9 +17,13 @@
     <p v-if="!tracks.length">No tracks sold during selected timeframe.</p>
 
     <audio-track @setCurrentTrack="loadAndOrPlayPauseCurrentTrack"
+    :ranks="tracks"
     :exchangeRate="exchangeRate"
     :currentTrack="currentTrack" :track="track"
-    :isPlaying="isPlaying" v-for="track in tracks" :key="track.origin" />
+    :isPlaying="isPlaying" v-for="(track, index) in tracks"
+    :key="track.origin"
+    :rank="index + 1"
+    />
   </div>
 </template>
 
@@ -37,8 +41,6 @@ const exchangeRate = ref(null)
 // TODO: Pass this as a prop instead
 onBeforeMount(async () => {
   const exchangeRateResponse = await api.get('https://api.whatsonchain.com/v1/bsv/main/exchangerate')
-
-  console.log(exchangeRateResponse.data)
 
   // round to w decimals
   exchangeRate.value = exchangeRateResponse.data.rate.toFixed(2)
@@ -129,7 +131,6 @@ const checkIsPlaying = () => {
 
 // Maybe just a load here
 const loadCurrentTrack = (track: Track) => {
-  console.log('track is', track)
   // Handle no sales error
   if (!track) {
     currentTrack.value = {
@@ -158,17 +159,10 @@ const loadCurrentTrack = (track: Track) => {
 
 // This will load a track if it's not already loaded, and play/pause it if it is
 const loadAndOrPlayPauseCurrentTrack = (track: Track) => {
-  console.log('track is', track)
   $q.loading.show({
     delay: 400 // ms
   })
   loadCurrentTrack(track);
-  console.log('currentTrack is', currentTrack.value)
-  console.log('bitcoinAudioPlayer is', bitcoinAudioPlayer?.value, currentTrack.value?.origin === track.origin && bitcoinAudioPlayer.value.currentTime > 0)
-  console.log('currentTrack.value?.origin === track.origin', currentTrack.value?.origin === track.origin)
-  console.log(currentTrack.value?.origin === track.origin && bitcoinAudioPlayer.value.play !== undefined)
-
-  console.log(currentTrack.value?.origin === track.origin && bitcoinAudioPlayer?.value)
   if (currentTrack.value?.origin === track.origin && typeof bitcoinAudioPlayer.value.play === 'function') {
     bitcoinAudioPlayer.value.isPlaying
       ? bitcoinAudioPlayer.value.pause()
